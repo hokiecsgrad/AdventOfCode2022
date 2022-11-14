@@ -1,12 +1,12 @@
-# Advent Of Code 2021
+# Advent Of Code 2022
 
-Code for 2021's Advent of Code challenge.
+Code for 2022's Advent of Code challenge.
 
-https://adventofcode.com/2021
+https://adventofcode.com/2022
 
 # Project template
 
-In the directory, `AoCTemplate` you'll find a `dotnet` template structure so that new days can be added easily.  The base usage for this is:
+In the directory, `AocTemplate` you'll find a `dotnet` template structure so that new days can be added easily.  The base usage for this is:
 
 `> dotnet new aoc --name Day01`
 
