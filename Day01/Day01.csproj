@@ -10,8 +10,8 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <LangVersion>10</LangVersion>
-    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>11</LangVersion>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
