@@ -5,14 +5,13 @@ using AdventOfCode.Common;
 using AdventOfCode.Day00;
 using Xunit;
 
-namespace AdventOfCode.Day00.Tests
-{
-    public class Day00Tests
-    {
-        [Fact]
-        public void Test1()
-        {
+namespace AdventOfCode.Day00.Tests;
 
-        }
+public class Day00Tests
+{
+    [Fact]
+    public void Test1()
+    {
+
     }
 }
