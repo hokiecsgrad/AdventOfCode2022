@@ -13,8 +13,8 @@ public class Program
 
         ProgramFramework framework = new ProgramFramework();
         framework.InputHandler = input.GetStringsFromInput;
-        framework.Part1Handler = new Part1().Run;
-        framework.Part2Handler = new Part2().Run;
+        framework.Part1Handler = new Day01().SolvePart1;
+        framework.Part2Handler = new Day01().SolvePart2;
         framework.RunProgram();
     }
 }
