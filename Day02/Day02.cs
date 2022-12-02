@@ -16,30 +16,28 @@ public class Day02
 {
     public void SolvePart1(string[] data)
     {
-        int totalScore = 0;
-        for (int i = 0; i < data.Length; i++)
-        {
-            string player1Shape = GetShape(data[i][0]);
-            string player2Shape = GetShape(data[i][2]);
-            totalScore += ScoreGame(player1Shape, player2Shape);
-        }
+        int totalScore = data
+            .Select(
+                gameCode => ScoreGame(GetShape(gameCode[0]), GetShape(gameCode[2]))
+                )
+            .Sum();
 
         System.Console.WriteLine($"Total score for all games is {totalScore}");
     }
 
     public void SolvePart2(string[] data)
     {
-        int totalScore = 0;
-        for (int i = 0; i < data.Length; i++)
-        {
-            string player1Shape = GetShape(data[i][0]);
-            string gameStrategy = GetStrategy(data[i][2]);
-            string player2Shape = DetermineShapeForGameStrategy(
-                                    player1Shape,
-                                    gameStrategy
-                                    );
-            totalScore += ScoreGame(player1Shape, player2Shape);
-        }
+        int totalScore = data
+            .Select(
+                gameCode => ScoreGame(
+                                GetShape(gameCode[0]),
+                                DetermineShapeForGameStrategy(
+                                    GetShape(gameCode[0]),
+                                    GetStrategy(gameCode[2])
+                                    )
+                                )
+                )
+            .Sum();
 
         System.Console.WriteLine($"Total score for all ideal games should be {totalScore}");
     }
