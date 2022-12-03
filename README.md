@@ -42,9 +42,9 @@ Day01\
 To install a template, once you've setup the template directory/structure as per the documentation here
 (https://docs.microsoft.com/en-us/dotnet/core/tools/custom-templates), then you can simply run the command
 
-`> dotnet new --install AocTemplate/`
+`> dotnet new install AocTemplate/`
 
 To make changes to a template, you have to uninstall it and reinstall it. The uninstall command can be
 found by running
 
-`> dotnet new --uninstall`.
+`> dotnet new uninstall`.
