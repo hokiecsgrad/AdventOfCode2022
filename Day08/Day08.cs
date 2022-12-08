@@ -9,6 +9,15 @@ public class Day08
 {
     public void SolvePart1(string[] data)
     {
+        Tree[,] grid = CreateTreeGrid(data);
+        int total = 0;
+
+        for (int y = 0; y < grid.GetLength(0); y++)
+            for (int x = 0; x < grid.GetLength(1); x++)
+                if (IsVisible(ref grid, y, x))
+                    total++;
+
+        System.Console.WriteLine($"The number of visible trees is {total}.");
     }
 
     public void SolvePart2(string[] data)
@@ -24,5 +33,53 @@ public class Day08
                 trees[i, j] = new Tree((int)char.GetNumericValue(data[i][j]));
 
         return trees;
+    }
+
+    public bool IsVisible(ref Tree[,] grid, int y, int x)
+    {
+        if (
+            IsVisibleFrom(ref grid, y, x, Direction.North) ||
+            IsVisibleFrom(ref grid, y, x, Direction.South) ||
+            IsVisibleFrom(ref grid, y, x, Direction.East) ||
+            IsVisibleFrom(ref grid, y, x, Direction.West)
+            )
+            return true;
+        else
+            return false;
+    }
+
+    public bool IsVisibleFrom(ref Tree[,] grid, int y, int x, Direction direction)
+    {
+        bool isVisible = true;
+
+        int yLow = 0;
+        int yHigh = grid.GetLength(0) - 1;
+        int xLow = 0;
+        int xHigh = grid.GetLength(1) - 1;
+
+        (int y, int x) dir = direction switch {
+            Direction.North => (-1,0),
+            Direction.South => (1,0),
+            Direction.East => (0,1),
+            Direction.West => (0,-1),
+            _ => (0,0)
+        };
+
+        (int y, int x) curr = (y + dir.y, x + dir.x);
+        while (curr.y >= yLow && curr.y <= yHigh && curr.x >= xLow && curr.x <= xHigh)
+        {
+            if (direction == Direction.North) grid[y,x].NorthVis++;
+            else if (direction == Direction.South) grid[y,x].SouthVis++;
+            else if (direction == Direction.East) grid[y,x].EastVis++;
+            else if (direction == Direction.West) grid[y,x].WestVis++;
+
+            if (grid[y,x].Size <= grid[curr.y,curr.x].Size)
+                return false;
+
+            curr.y += dir.y;
+            curr.x += dir.x;
+        }
+
+        return isVisible;
     }
 }
