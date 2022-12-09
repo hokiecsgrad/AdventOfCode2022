@@ -31,7 +31,7 @@ public class Day08Tests
 
         for (int i = 0; i < data.Length; i++)
             for (int j = 0; j < data[i].Length; j++)
-                Assert.Equal(expected[i,j].Size, actual[i,j].Size);
+                Assert.Equal(expected[i, j].Size, actual[i, j].Size);
     }
 
     [Fact]
@@ -110,7 +110,7 @@ public class Day08Tests
         solver.IsVisibleFrom(ref grid, 1, 2, Direction.East);
         solver.IsVisibleFrom(ref grid, 1, 2, Direction.West);
 
-        Assert.Equal(4, grid[1,2].Visibility);
+        Assert.Equal(4, grid[1, 2].Visibility);
     }
 
     [Fact]
@@ -124,7 +124,7 @@ public class Day08Tests
         solver.IsVisibleFrom(ref grid, 3, 2, Direction.East);
         solver.IsVisibleFrom(ref grid, 3, 2, Direction.West);
 
-        Assert.Equal(8, grid[3,2].Visibility);
+        Assert.Equal(8, grid[3, 2].Visibility);
     }
 
     [Fact]
@@ -138,8 +138,8 @@ public class Day08Tests
             for (int x = 0; x < grid.GetLength(1); x++)
             {
                 solver.IsVisible(ref grid, y, x);
-                if (grid[y,x].Visibility > maxVisibility)
-                    maxVisibility = grid[y,x].Visibility;
+                if (grid[y, x].Visibility > maxVisibility)
+                    maxVisibility = grid[y, x].Visibility;
             }
 
         Assert.Equal(8, maxVisibility);

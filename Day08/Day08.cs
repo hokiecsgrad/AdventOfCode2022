@@ -22,6 +22,18 @@ public class Day08
 
     public void SolvePart2(string[] data)
     {
+        Tree[,] grid = CreateTreeGrid(data);
+        int maxVisibility = 0;
+
+        for (int y = 0; y < grid.GetLength(0); y++)
+            for (int x = 0; x < grid.GetLength(1); x++)
+            {
+                IsVisible(ref grid, y, x);
+                if (grid[y, x].Visibility > maxVisibility)
+                    maxVisibility = grid[y, x].Visibility;
+            }
+
+        System.Console.WriteLine($"Tree with the best view is {maxVisibility}.");
     }
 
     public Tree[,] CreateTreeGrid(string[] data)
@@ -37,12 +49,12 @@ public class Day08
 
     public bool IsVisible(ref Tree[,] grid, int y, int x)
     {
-        if (
-            IsVisibleFrom(ref grid, y, x, Direction.North) ||
-            IsVisibleFrom(ref grid, y, x, Direction.South) ||
-            IsVisibleFrom(ref grid, y, x, Direction.East) ||
-            IsVisibleFrom(ref grid, y, x, Direction.West)
-            )
+        bool isVisN = IsVisibleFrom(ref grid, y, x, Direction.North);
+        bool isVisS = IsVisibleFrom(ref grid, y, x, Direction.South);
+        bool isVisE = IsVisibleFrom(ref grid, y, x, Direction.East);
+        bool isVisW = IsVisibleFrom(ref grid, y, x, Direction.West);
+
+        if (isVisN || isVisS || isVisE || isVisW)
             return true;
         else
             return false;
@@ -57,23 +69,24 @@ public class Day08
         int xLow = 0;
         int xHigh = grid.GetLength(1) - 1;
 
-        (int y, int x) dir = direction switch {
-            Direction.North => (-1,0),
-            Direction.South => (1,0),
-            Direction.East => (0,1),
-            Direction.West => (0,-1),
-            _ => (0,0)
+        (int y, int x) dir = direction switch
+        {
+            Direction.North => (-1, 0),
+            Direction.South => (1, 0),
+            Direction.East => (0, 1),
+            Direction.West => (0, -1),
+            _ => (0, 0)
         };
 
         (int y, int x) curr = (y + dir.y, x + dir.x);
         while (curr.y >= yLow && curr.y <= yHigh && curr.x >= xLow && curr.x <= xHigh)
         {
-            if (direction == Direction.North) grid[y,x].NorthVis++;
-            else if (direction == Direction.South) grid[y,x].SouthVis++;
-            else if (direction == Direction.East) grid[y,x].EastVis++;
-            else if (direction == Direction.West) grid[y,x].WestVis++;
+            if (direction == Direction.North) grid[y, x].NorthVis++;
+            else if (direction == Direction.South) grid[y, x].SouthVis++;
+            else if (direction == Direction.East) grid[y, x].EastVis++;
+            else if (direction == Direction.West) grid[y, x].WestVis++;
 
-            if (grid[y,x].Size <= grid[curr.y,curr.x].Size)
+            if (grid[y, x].Size <= grid[curr.y, curr.x].Size)
                 return false;
 
             curr.y += dir.y;
