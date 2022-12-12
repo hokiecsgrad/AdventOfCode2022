@@ -30,14 +30,14 @@ public class Day12
         return startPos;
     }
 
-    public List<int> FindPaths((int y, int x) start, string[] grid)
+    public List<(int y, int x)> FindPaths((int y, int x) start, string[] grid)
     {
-        List<int> paths = new();
+        List<(int y, int x)> paths = new();
 
         return paths;
     }
 
-    public List<int> FindPath((int y, int x) curr, string[] grid, List<int> visited)
+    public List<(int y, int x)> FindPath((int y, int x) curr, string[] grid, List<(int y, int x)> visited)
     {
         // get list of valid neighbors
 
@@ -46,5 +46,13 @@ public class Day12
         // foreach valid neighbor, FindPath 
 
         // return paths
+        return new List<(int,int)>();
+    }
+
+    public List<(int,int)> GetValidNeighbors((int y, int x) pos, string[] grid, List<int> visited)
+    {
+        List<(int,int)> neighbors = new();
+
+        return neighbors;
     }
 }
