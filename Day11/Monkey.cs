@@ -17,9 +17,12 @@ public class Monkey
     public int MonkeyIndexTrue { get; set; } = 0;
     public int MonkeyIndexFalse { get; set; } = 0;
 
-    public Monkey(string[] data)
+    public bool IsPart1Monkey { get; set; } = true;
+
+    public Monkey(string[] data, bool isPart1 = true)
     {
         ParseMonkey(data);
+        IsPart1Monkey = isPart1;
     }
 
     private void ParseMonkey(string[] data)
@@ -63,7 +66,8 @@ public class Monkey
         {
             currItem = InspectItem();
 
-            currItem.WorryLevel /= 3;
+            if (IsPart1Monkey)
+                currItem.WorryLevel /= 3;
 
             bool test = currItem.WorryLevel % TestDivBy == 0;
             monkeys[test ? MonkeyIndexTrue : MonkeyIndexFalse].Items.Enqueue(currItem);
@@ -73,16 +77,19 @@ public class Monkey
     public Item InspectItem()
     {
         Item currItem = Items.Dequeue();
+
         currItem.WorryLevel = WorryLevelOp switch
         {
             "+" => currItem.WorryLevel + WorryLevelValue,
             "-" => currItem.WorryLevel - WorryLevelValue,
             "*" => currItem.WorryLevel * WorryLevelValue,
             "/" => currItem.WorryLevel / WorryLevelValue,
-            "**" => (int)Math.Pow(currItem.WorryLevel, 2),
+            "**" => currItem.WorryLevel * currItem.WorryLevel,
             _ => throw new InvalidOperationException()
         };
+        
         NumItemsInspected++;
+        
         return currItem;
     }
 }

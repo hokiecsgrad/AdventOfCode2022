@@ -1,12 +1,13 @@
-
+using System;
+using System.Numerics;
 
 namespace AdventOfCode.Day11;
 
 public class Item
 {
-    public int WorryLevel { get; set; } = 0;
+    public BigInteger WorryLevel { get; set; } = 0;
 
-    public Item(int level)
+    public Item(BigInteger level)
     {
         WorryLevel = level;
     }

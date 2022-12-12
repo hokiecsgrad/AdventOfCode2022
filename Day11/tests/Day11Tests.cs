@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using System.Collections.Generic;
 using System.Linq;
 using AdventOfCode.Common;
@@ -9,10 +10,15 @@ namespace AdventOfCode.Day11.Tests;
 
 public class Day11Tests
 {
+    public Day11Tests()
+    {
+        data = sampleInput.Split('\n', StringSplitOptions.TrimEntries);
+    }
+
     [Fact]
     public void ParseMonkey_WithFirstSampleMonkey_ShouldReturnMonkey()
     {
-        string[] data = new string[5] {
+        data = new string[5] {
             "  Starting items: 79, 98",
             "  Operation: new = old * 19",
             "  Test: divisible by 23",
@@ -32,7 +38,7 @@ public class Day11Tests
     [Fact]
     public void Turn_WithSampleData_ShouldWork()
     {
-        string[] data = new string[5] {
+        data = new string[5] {
             "  Starting items: 79, 98",
             "  Operation: new = old * 19",
             "  Test: divisible by 23",
@@ -65,47 +71,8 @@ public class Day11Tests
     [Fact]
     public void Round_WithSampleData_ShouldWork()
     {
-        string[] data = new string[5] {
-            "  Starting items: 79, 98",
-            "  Operation: new = old * 19",
-            "  Test: divisible by 23",
-            "    If true: throw to monkey 2",
-            "    If false: throw to monkey 3"
-        };
-        Monkey monkey0 = new Monkey(data);
-
-        data = new string[5] {
-            "  Starting items: 54, 65, 75, 74",
-            "  Operation: new = old + 6",
-            "  Test: divisible by 19",
-            "    If true: throw to monkey 2",
-            "    If false: throw to monkey 0"
-        };
-        Monkey monkey1 = new Monkey(data);
-
-        data = new string[5] {
-            "  Starting items: 79, 60, 97",
-            "  Operation: new = old * old",
-            "  Test: divisible by 13",
-            "    If true: throw to monkey 1",
-            "    If false: throw to monkey 3"
-        };
-        Monkey monkey2 = new Monkey(data);
-
-        data = new string[5] {
-            "  Starting items: 74",
-            "  Operation: new = old + 3",
-            "  Test: divisible by 17",
-            "    If true: throw to monkey 0",
-            "    If false: throw to monkey 1"
-        };
-        Monkey monkey3 = new Monkey(data);
-
-        Monkey[] monkeys = new Monkey[4];
-        monkeys[0] = monkey0;
-        monkeys[1] = monkey1;
-        monkeys[2] = monkey2;
-        monkeys[3] = monkey3;
+        Day11 solver = new();
+        Monkey[] monkeys = solver.ParseMonkeyFromInput(data, true);
 
         for (int i = 0; i < monkeys.Length; i++)
         {
@@ -121,47 +88,8 @@ public class Day11Tests
     [Fact]
     public void Part1_WithSampleData_ShouldReturn10605()
     {
-        string[] data = new string[5] {
-            "  Starting items: 79, 98",
-            "  Operation: new = old * 19",
-            "  Test: divisible by 23",
-            "    If true: throw to monkey 2",
-            "    If false: throw to monkey 3"
-        };
-        Monkey monkey0 = new Monkey(data);
-
-        data = new string[5] {
-            "  Starting items: 54, 65, 75, 74",
-            "  Operation: new = old + 6",
-            "  Test: divisible by 19",
-            "    If true: throw to monkey 2",
-            "    If false: throw to monkey 0"
-        };
-        Monkey monkey1 = new Monkey(data);
-
-        data = new string[5] {
-            "  Starting items: 79, 60, 97",
-            "  Operation: new = old * old",
-            "  Test: divisible by 13",
-            "    If true: throw to monkey 1",
-            "    If false: throw to monkey 3"
-        };
-        Monkey monkey2 = new Monkey(data);
-
-        data = new string[5] {
-            "  Starting items: 74",
-            "  Operation: new = old + 3",
-            "  Test: divisible by 17",
-            "    If true: throw to monkey 0",
-            "    If false: throw to monkey 1"
-        };
-        Monkey monkey3 = new Monkey(data);
-
-        Monkey[] monkeys = new Monkey[4];
-        monkeys[0] = monkey0;
-        monkeys[1] = monkey1;
-        monkeys[2] = monkey2;
-        monkeys[3] = monkey3;
+        Day11 solver = new();
+        Monkey[] monkeys = solver.ParseMonkeyFromInput(data, true);
 
         for (int j = 0; j < 20; j++)
         {
@@ -177,4 +105,56 @@ public class Day11Tests
 
         Assert.Equal(10605, total);
     }
+
+    [Fact (Skip = "takes way too damn long")]
+    public void Part2_WithSampleData_ShouldReturn2713310158()
+    {
+        Day11 solver = new();
+        Monkey[] monkeys = solver.ParseMonkeyFromInput(data, true);
+
+        for (int j = 0; j < 10000; j++)
+        {
+            for (int i = 0; i < monkeys.Length; i++)
+                monkeys[i].TakeTurn(monkeys);
+        }
+
+        BigInteger total = monkeys
+                        .OrderByDescending(x => x.NumItemsInspected)
+                        .Take(2)
+                        .Select(m => m.NumItemsInspected)
+                        .Aggregate((a, b) => a * b);
+
+        Assert.Equal(2713310158, total);
+    }
+
+    string[] data;
+    string sampleInput = """
+Monkey 0:
+  Starting items: 79, 98
+  Operation: new = old * 19
+  Test: divisible by 23
+    If true: throw to monkey 2
+    If false: throw to monkey 3
+
+Monkey 1:
+  Starting items: 54, 65, 75, 74
+  Operation: new = old + 6
+  Test: divisible by 19
+    If true: throw to monkey 2
+    If false: throw to monkey 0
+
+Monkey 2:
+  Starting items: 79, 60, 97
+  Operation: new = old * old
+  Test: divisible by 13
+    If true: throw to monkey 1
+    If false: throw to monkey 3
+
+Monkey 3:
+  Starting items: 74
+  Operation: new = old + 3
+  Test: divisible by 17
+    If true: throw to monkey 0
+    If false: throw to monkey 1
+""";
 }
