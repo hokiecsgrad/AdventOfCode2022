@@ -9,10 +9,10 @@ public class Day12
 {
     public void SolvePart1(string[] data)
     {
-        bool[,] unvisited = new bool[data.Length, data[0].Length];
+        HashSet<(int y,int x)> unvisited = new();
         for (int y = 0; y < data.Length; y++)
             for (int x = 0; x < data[y].Length; x++)
-                unvisited[y, x] = true;
+                unvisited.Add( (y, x) );
 
         int[,] distance = new int[data.Length, data[0].Length];
         for (int y = 0; y < data.Length; y++)
@@ -33,55 +33,92 @@ public class Day12
     {
     }
 
-    public int DijkstrasSearch((int y, int x) curr, (int y, int x) dest, string[] data, bool[,] unvisited, int[,] distance)
+    public (int,int) BredthFirstSearch(string[] data, (int y, int x) start, (int y, int x) dest, HashSet<(int y, int x)> explored)
+    {
+        Queue<(int,int)> search = new();
+        explored.Add(start);
+        search.Enqueue(start);
+        while (search.Count > 0)
+        {
+            (int y, int x) curr = search.Dequeue();
+            if (curr == dest) return curr;
+            List<(int y, int x)> neighbors = GetValidNeighbors(curr, data);
+            foreach (var node in neighbors)
+            {
+                if (!explored.Contains(node))
+                {
+                    explored.Add(node);
+                    node.parent = curr;
+                    search.Enqueue(node);
+                }
+            }
+        }
+    }
+
+    public int DijkstrasSearch((int y, int x) curr, (int y, int x) dest, string[] data, HashSet<(int y, int x)> unvisited, int[,] distance)
     {
         bool searching = true;
         while (searching)
         {
+            //System.Console.WriteLine($"dest y, x: {dest.y}, {dest.x}");
+            System.Console.WriteLine($"y, x = {curr.y}, {curr.x}");
+            //System.Console.WriteLine($"{data[curr.y][curr.x].ToString()}");
             List<(int y, int x)> neighbors = GetValidNeighbors(curr, data);
             foreach (var node in neighbors)
             {
-                if (unvisited[node.y, node.x])
+                if (unvisited.Contains(node))
                     if (distance[curr.y, curr.x] + 1 < distance[node.y, node.x])
                         distance[node.y, node.x] = distance[curr.y, curr.x] + 1;
             }
-            unvisited[curr.y, curr.x] = false;
+            unvisited.Remove((curr.y, curr.x));
 
             if (curr == dest) searching = false;
-            bool allVisited = true;
-            for (int y = 0; y < unvisited.GetLength(0); y++)
-                for (int x = 0; x < unvisited.GetLength(1); x++)
-                    if (unvisited[y, x])
-                        allVisited = false;
-            if (allVisited) throw new Exception();
 
-            if (searching)
+            // get shortest distance unvisited node
+            // set next node to smallest, unvisited neighbor
+            int shortest = int.MaxValue;
+            (int y, int x) shortestPos = (-1, -1);
+            foreach (var node in neighbors)
             {
-                // get shortest distance unvisited node
-                int shortest = int.MaxValue;
-                (int y, int x) shortestPos = (0, 0);
-                for (int y = 0; y < unvisited.GetLength(0); y++)
+                if (unvisited.Contains(node) && distance[node.y, node.x] < shortest)
                 {
-                    for (int x = 0; x < unvisited.GetLength(1); x++)
+                    shortest = distance[node.y, node.x];
+                    shortestPos = node;
+                }
+            }
+            if (shortestPos == (-1,-1))
+            {
+                foreach (var node in unvisited)
+                {
+                    if (distance[node.y, node.x] < shortest)
                     {
-                        if (unvisited[y, x] && distance[y, x] < shortest)
-                        {
-                            shortest = distance[y, x];
-                            shortestPos = (y, x);
-                        }
+                        shortest = distance[node.y, node.x];
+                        shortestPos = node;
                     }
                 }
-
-                curr = shortestPos;
-                // FIND NEXT CURR
-                //curr = neighbors
-                //        .Where(pos => unvisited[pos.y, pos.x])
-                //        .OrderBy(pos => distance[pos.y, pos.x])
-                //        .First();
             }
+            curr = shortestPos;
+
+            PrintGrid(distance);
         }
 
         return distance[dest.y, dest.x];
+    }
+
+    private void PrintGrid(int[,] grid)
+    {
+        for (int y = 0; y < grid.GetLength(0); y++)
+        {
+            for (int x = 0; x < grid.GetLength(1); x++)
+            {
+                if (grid[y,x] == int.MaxValue)
+                    System.Console.Write($" XXX");
+                else
+                    System.Console.Write($"{grid[y,x],4}");
+            }
+            System.Console.WriteLine();
+        }
+        System.Console.WriteLine();
     }
 
     public List<(int, int)> GetValidNeighbors((int y, int x) curr, string[] grid)
