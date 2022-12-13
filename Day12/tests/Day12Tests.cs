@@ -15,19 +15,19 @@ public class Day12Tests
     }
 
     [Fact]
-    public void FindStartPosition_WithSampleData_ShouldReturn00()
-    {
-        Day12 solver = new();
-
-        (int y, int x) startPos = solver.FindStartPosition(data);
-
-        Assert.Equal((0, 0), startPos);
-    }
-
-    [Fact]
     public void Part1_WithSampleData_ShouldReturn31()
     {
+        Path path = new Path(data);
+        List<string> paths = path.FindPaths();
 
+        int shortestPath = paths
+                            .Where(str => str[^1] == 'E')
+                            .Select(str => str.Replace(",", string.Empty))
+                            .OrderBy(str => str.Length)
+                            .First()
+                            .Length - 1;
+
+        Assert.Equal(31, shortestPath);
     }
 
     string[] data;
