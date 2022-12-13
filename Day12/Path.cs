@@ -13,12 +13,16 @@ public class Path
         CreateGraph(data);
     }
 
-    public List<string> FindPaths()
+    public List<Step> FindShortestPath()
     {
-        return TravelPaths(_rootNode, new List<Step>());
+        HashSet<Step> unvisited = new();
+
+        List<Step> path = DijkstrasSearch(_rootNode);
+
+        return new List<Step>();
     }
 
-    private List<string> TravelPaths(Step currNode, List<Step> visited)
+    private List<string> RecursiveSearch(Step currNode, List<Step> visited)
     {
         if (visited.Contains(currNode)) return new List<string>();
         if (currNode.Name[^1] == 'E') return new List<string> { ",E" };
@@ -26,13 +30,27 @@ public class Path
         List<string> currPaths = new();
         foreach (var node in currNode.Edges)
         {
-            List<string> paths = TravelPaths(node, new List<Step>(visited) { currNode });
+            List<string> paths = RecursiveSearch(node, new List<Step>(visited) { currNode });
             string prefix = currNode.Name[^1] == 'S' ? "" : ",";
             paths = paths.Select(p => prefix + currNode.Name[^1] + p).ToList();
             currPaths.AddRange(paths);
         }
 
         return currPaths;
+    }
+
+    private List<Step> DijkstrasSearch(Step curr)
+    {
+        // get all unvisited neighbors
+        List<Step> unvisited = curr.Edges.Where(x => x.Visited == false).ToList();
+        foreach (Step node in unvisited)
+        {
+            if (curr.DistanceToSource + 1 < node.DistanceToSource)
+                node.DistanceToSource = curr.DistanceToSource + 1;
+            node.Visited = true;
+        }
+
+        return new List<Step>();
     }
 
     private void CreateGraph(string[] data)
@@ -42,7 +60,7 @@ public class Path
             for (int x = 0; x < data[y].Length; x++)
             {
                 pathGrid[y, x] ??= new Step($"{y},{x}: {data[y][x]}");
-                if (data[y][x] == 'S') _rootNode = pathGrid[y, x];
+                if (data[y][x] == 'S') { _rootNode = pathGrid[y, x]; _rootNode.DistanceToSource = 0; }
 
                 List<Step> neighbors = GetValidNeighbors((y, x), data, pathGrid);
                 foreach (Step neighbor in neighbors)

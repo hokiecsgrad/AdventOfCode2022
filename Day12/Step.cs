@@ -7,6 +7,8 @@ public class Step
 {
     public string Name { get; set; }
     public List<Step> Edges { get; private set; } = new();
+    public bool Visited { get; set; } = false;
+    public int DistanceToSource { get; set; } = int.MaxValue;
 
     public Step(string name)
     {

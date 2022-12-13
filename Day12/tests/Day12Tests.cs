@@ -15,17 +15,27 @@ public class Day12Tests
     }
 
     [Fact]
-    public void Part1_WithSampleData_ShouldReturn31()
+    public void Dijkstra_WithSampleData_ShouldFindShortestPath31()
     {
-        Path path = new Path(data);
-        List<string> paths = path.FindPaths();
+        Day12 solver = new();
 
-        int shortestPath = paths
-                            .Where(str => str[^1] == 'E')
-                            .Select(str => str.Replace(",", string.Empty))
-                            .OrderBy(str => str.Length)
-                            .First()
-                            .Length - 1;
+        // create unvisited grid from data
+        bool[,] unvisited = new bool[data.Length, data[0].Length];
+        for (int y = 0; y < data.Length; y++)
+            for (int x = 0; x < data[y].Length; x++)
+                unvisited[y,x] = true;
+        
+        int[,] distance = new int[data.Length, data[0].Length];
+        for (int y = 0; y < data.Length; y++)
+            for (int x = 0; x < data[y].Length; x++)
+                distance[y,x] = int.MaxValue;
+
+        (int y, int x) start = solver.FindPosOf('S', data);
+        (int y, int x) dest = solver.FindPosOf('E', data);
+
+        distance[start.y, start.x] = 0;
+
+        int shortestPath = solver.DijkstrasSearch(start, dest, data, unvisited, distance);
 
         Assert.Equal(31, shortestPath);
     }
